@@ -102,15 +102,15 @@ Full design notes: [`docs/backend-design.md`](docs/backend-design.md), [`docs/fr
 
 ## Time spent
 
-<!-- TODO(author): fill in your actual time. -->
+About 6.5 hours in total, well over the 2–3 hour time-box. Most of the extra time went into planning: the questions, specs and tickets were settled before any feature code was written.
 
 | Phase | Time |
 | --- | --- |
-| Planning | _TODO_ |
-| Building | _TODO_ |
-| Testing | _TODO_ |
-| Reviewing | _TODO_ |
-| **Total** | _TODO_ |
+| Planning: questioning the idea and writing the specs | 2 h |
+| Breaking the specs into tickets | 1 h |
+| Building and testing (test-first, so the two aren't separated) | ~3.5 h |
+| Reviewing | Done PR by PR: each one was checked by hand and run through CI before merging. Included in the building time. |
+| **Total** | **~6.5 h** |
 
 ## Deployment
 

@@ -1,7 +1,5 @@
 # AI usage
 
-<!-- TODO(author): replace every _TODO_ before submitting. -->
-
 ## Tools and models
 
 - **Tool:** [Claude Code](https://claude.com/claude-code), Anthropic's agentic coding tool.
@@ -9,8 +7,9 @@
 
 ## Agent instruction files
 
-- [`frontend/AGENTS.md`](frontend/AGENTS.md): written by `next dev`. It tells agents to check the installed Next.js docs instead of relying on their training data.
-- _TODO: list any other instruction files you used (`CLAUDE.md`, `.cursor/rules`, …) and commit them to the repo._
+No agent instruction files were written for this project. The AI was steered by the specs and tickets instead (see below).
+
+The only one in the repo is [`frontend/AGENTS.md`](frontend/AGENTS.md), which `next dev` generates. It tells agents to check the installed Next.js docs instead of relying on their training data.
 
 ## Plan and spec
 
