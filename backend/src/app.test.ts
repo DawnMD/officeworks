@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { createApp } from "./app.js";
 import { createInMemoryCatalogue } from "./catalogue/in-memory.js";
+import { createInMemoryEnquiryStore } from "./enquiries/in-memory.js";
 
 const testApp = () =>
   createApp({
     corsOrigins: ["http://localhost:3000"],
     catalogue: createInMemoryCatalogue(),
     featured: { home: [], categories: {} },
+    enquiries: createInMemoryEnquiryStore(),
   });
 
 describe("api", () => {
@@ -28,6 +30,7 @@ describe("api", () => {
       corsOrigins: ["https://shop.example"],
       catalogue: createInMemoryCatalogue(),
       featured: { home: [], categories: {} },
+      enquiries: createInMemoryEnquiryStore(),
     });
     const allowed = await app.request("/health", {
       headers: { Origin: "https://shop.example" },

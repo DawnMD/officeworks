@@ -4,6 +4,7 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import type { CatalogueSource } from "./catalogue/catalogue-source.js";
 import type { FeaturedConfig } from "./catalogue/featured.js";
+import type { EnquiryStore } from "./enquiries/enquiry-store.js";
 import {
   CatalogueUnavailableSchema,
   NotFoundSchema,
@@ -11,6 +12,7 @@ import {
   ValidationFailedSchema,
 } from "./http/errors.js";
 import { categories } from "./routes/categories.js";
+import { enquiries } from "./routes/enquiries.js";
 import { health } from "./routes/health.js";
 import { home } from "./routes/home.js";
 import { products } from "./routes/products.js";
@@ -19,6 +21,9 @@ export type AppDeps = {
   corsOrigins: string[];
   catalogue: CatalogueSource;
   featured: FeaturedConfig;
+  enquiries: EnquiryStore;
+  /** Defaults to the system clock. */
+  now?: () => Date;
 };
 
 export function createApp(deps: AppDeps) {
@@ -39,6 +44,10 @@ export function createApp(deps: AppDeps) {
   app.route("/", products(deps.catalogue));
   app.route("/", home(deps.catalogue, deps.featured));
   app.route("/", categories(deps.catalogue, deps.featured));
+  app.route(
+    "/",
+    enquiries(deps.catalogue, deps.enquiries, deps.now ?? (() => new Date())),
+  );
 
   app.doc31("/openapi.json", {
     openapi: "3.1.0",

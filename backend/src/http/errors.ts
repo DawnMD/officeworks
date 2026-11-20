@@ -5,6 +5,7 @@ import {
   CatalogueUnavailableError,
   NotFoundError,
 } from "../catalogue/catalogue-source.js";
+import { EnquiryNotSavedError } from "../enquiries/enquiry-store.js";
 
 export const NotFoundSchema = z
   .object({ error: z.literal("not_found") })
@@ -14,7 +15,11 @@ export const CatalogueUnavailableSchema = z
   .object({ error: z.literal("catalogue_unavailable") })
   .openapi("CatalogueUnavailable");
 
-/** Maps catalogue errors thrown by any route to the shared error responses. */
+export const EnquiryNotSavedSchema = z
+  .object({ error: z.literal("enquiry_not_saved") })
+  .openapi("EnquiryNotSaved");
+
+/** Maps catalogue and enquiry errors thrown by any route to the shared error responses. */
 export const onError: ErrorHandler = (err, c) => {
   if (err instanceof NotFoundError) {
     return c.json({ error: "not_found" as const }, 404);
@@ -22,6 +27,10 @@ export const onError: ErrorHandler = (err, c) => {
   if (err instanceof CatalogueUnavailableError) {
     console.error(err);
     return c.json({ error: "catalogue_unavailable" as const }, 502);
+  }
+  if (err instanceof EnquiryNotSavedError) {
+    console.error(err);
+    return c.json({ error: "enquiry_not_saved" as const }, 502);
   }
   if (err instanceof HTTPException) return err.getResponse();
   console.error(err);

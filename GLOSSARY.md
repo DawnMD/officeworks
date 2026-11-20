@@ -34,6 +34,6 @@ _Avoid_: Review, stars
 A customer's request to be contacted by sales about one specific product, carrying their contact details.
 _Avoid_: Lead, contact request, quote
 
-**Sales inbox**:
-The single email address that receives every enquiry.
-_Avoid_: Sales team email, admin email
+**Enquiry log**:
+The CSV file every enquiry is appended to, for the sales team to follow up.
+_Avoid_: Sales inbox, enquiry database

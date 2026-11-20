@@ -18,6 +18,9 @@ WORKDIR /app
 COPY --from=build --chown=node:node /app/node_modules ./node_modules
 COPY --from=build --chown=node:node /app/dist ./dist
 COPY --chown=node:node package.json ./
+# Enquiries are appended to /app/data/enquiries.csv. Mount a volume here so they survive redeploys.
+RUN mkdir -p /app/data && chown node:node /app/data
+VOLUME /app/data
 USER node
 EXPOSE 8787
 ENV PORT=8787

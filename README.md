@@ -34,4 +34,4 @@ cd frontend && pnpm gen:api
 - **backend**: `backend/Dockerfile` builds a Node container (ECS/Fargate, Fly, Railway, a VPS…). `src/lambda.ts` exports a handler for AWS Lambda.
 - **frontend**: `frontend/Dockerfile` builds a Next.js standalone image for AWS or anywhere else. On Vercel, set the project's Root Directory to `frontend`.
 
-Env vars: the backend reads `PORT` and `CORS_ORIGINS`; the frontend reads `API_URL` at runtime and `NEXT_PUBLIC_API_URL` at build time.
+Env vars: the backend reads `PORT`, `CORS_ORIGINS`, `FAKE_STORE_URL`, and `ENQUIRIES_CSV_PATH` (the CSV file every enquiry is appended to, created if missing; defaults to `data/enquiries.csv`, which the Docker image keeps on a `/app/data` volume. Lambda's filesystem is temporary, so use the container there if enquiries matter). The frontend reads `API_URL` at runtime and `NEXT_PUBLIC_API_URL` at build time.

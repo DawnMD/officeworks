@@ -12,7 +12,7 @@ Design for the officeworks storefront backend (`backend/`), agreed before implem
 | Category page | Customer sees the **Featured products** for a **Category**, plus its **Additional products**. |
 | Search | Customer sees only **Products** whose text matches the search term. |
 | Product page | Customer sees one **Product**'s details. |
-| Enquiry | Customer submits contact details about a **Product**; the **Sales inbox** receives an email; the customer sees "Thank you". |
+| Enquiry | Customer submits contact details about a **Product**; it is appended to the **Enquiry log**; the customer sees "Thank you". |
 
 ## Data source
 
@@ -101,33 +101,32 @@ Request body:
 
 Responses:
 
-- `201`: the email was sent. The frontend shows "Thank you".
+- `201 { status: "saved" }`: the enquiry was appended to the **Enquiry log**. The frontend shows "Thank you".
 - `400`: validation failed, in the shape above. `404`: unknown product.
 - `429`: rate-limited. The limit is **5 enquiries per IP per 10 minutes**, held in memory per instance.
-- `502`: the email failed to send. Enquiries are not stored anywhere, so the customer must see an error and retry. The frontend never shows "Thank you" for an enquiry that wasn't delivered.
+- `502 { error: "catalogue_unavailable" | "enquiry_not_saved" }`: the product could not be looked up, or the enquiry could not be written. The customer must see an error and retry. The frontend never shows "Thank you" for an enquiry that wasn't saved.
 - Honeypot filled: return `201` but send nothing.
 
-Email:
+Enquiry log:
 
-- To `SALES_INBOX`, from `MAIL_FROM`, with **Reply-To** set to the customer's email.
-- Subject `New enquiry: {product name}`. The plain-text body holds the customer's details and the product's name, id and price.
+- A CSV file at `ENQUIRIES_CSV_PATH` (default `data/enquiries.csv`). It is created with a header row, and its folder, if missing; otherwise rows are appended, so enquiries survive restarts.
+- Columns: `received_at, product_id, product_name, product_price, name, email, phone, message`. The product's name and price are copied as they were when the enquiry arrived.
+- Cells are RFC 4180-quoted, and text starting with `= + - @` gets a leading `'` so spreadsheet apps don't run it as a formula.
+- Writes from one process are queued, so concurrent enquiries never interleave. Run a single instance per file: there is no cross-process locking.
 
-`Mailer` interface:
+`EnquiryStore` interface:
 
-- `SmtpMailer` (nodemailer), used when `SMTP_URL` is set.
-- `ConsoleMailer`, used in local development when `SMTP_URL` is unset.
-- `InMemoryMailer`, used in tests to check what was "sent".
+- `CsvEnquiryStore`, used by the app.
+- `InMemoryEnquiryStore`, used in tests to check what was saved.
 
 ## Configuration
 
 | Env var | Purpose |
 | --- | --- |
 | `PORT`, `CORS_ORIGINS` | Existing |
-| `SALES_INBOX` | Recipient of enquiry emails |
-| `MAIL_FROM` | Sender address |
-| `SMTP_URL` | SMTP connection string; unset means log emails to the console |
+| `ENQUIRIES_CSV_PATH` | CSV file enquiries are appended to; defaults to `data/enquiries.csv` |
 | `FAKE_STORE_URL` | Origin of the catalogue provider. Required; set only in `.env`, never committed |
 
 ## Out of scope (for now)
 
-Database, caching, admin and auth, product/category CRUD, pagination, full-text search ranking, CAPTCHA, and storing enquiries.
+Database, caching, admin and auth, product/category CRUD, pagination, full-text search ranking, CAPTCHA, and emailing enquiries.

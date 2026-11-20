@@ -6,6 +6,7 @@ import {
   type Product,
 } from "../catalogue/catalogue-source.js";
 import { createInMemoryCatalogue } from "../catalogue/in-memory.js";
+import { createInMemoryEnquiryStore } from "../enquiries/in-memory.js";
 
 const backpack: Product = {
   id: 1,
@@ -32,6 +33,7 @@ const appWith = (catalogue: CatalogueSource) =>
     corsOrigins: ["http://localhost:3000"],
     catalogue,
     featured: { home: [], categories: {} },
+    enquiries: createInMemoryEnquiryStore(),
   });
 
 describe("GET /products/{id}", () => {
