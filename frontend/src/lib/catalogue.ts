@@ -16,3 +16,15 @@ export async function getProduct(id: number) {
   }
   return data;
 }
+
+/** Products whose name or description contains the term. Not cached: every search hits the backend. */
+export async function searchProducts(term: string) {
+  const { data, response } = await api.GET("/products", {
+    params: { query: { q: term } },
+  });
+  if (!data) {
+    // 502 catalogue_unavailable (or anything unexpected): let the error boundary show it.
+    throw new Error(`GET /products?q= returned ${response.status}`);
+  }
+  return data;
+}

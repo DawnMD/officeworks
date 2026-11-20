@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { Suspense } from "react";
+import { HeaderSearch } from "./header-search";
+import { SearchForm } from "./search-form";
 
 export function SiteHeader() {
   return (
@@ -9,8 +12,11 @@ export function SiteHeader() {
         </Link>
         {/* Category links (#7) go here. */}
         <nav aria-label="Categories" className="flex flex-1 flex-wrap gap-4" />
-        {/* The search bar (#5) goes here. */}
-        <div className="w-full sm:w-auto" />
+        <div className="w-full sm:w-auto">
+          <Suspense fallback={<SearchForm />}>
+            <HeaderSearch />
+          </Suspense>
+        </div>
       </div>
     </header>
   );
