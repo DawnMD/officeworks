@@ -1,6 +1,8 @@
 # Backend design
 
-Design for the officeworks storefront backend (`backend/`), agreed before implementation. Terms in **bold** are defined in [`GLOSSARY.md`](../GLOSSARY.md).
+Design for the officeworks storefront backend (`backend/`), agreed before implementation. Terms in **bold** are defined in [`GLOSSARY.md`](../GLOSSARY.md). The frontend that uses it is described in [`frontend-design.md`](frontend-design.md).
+
+> **Status:** only `GET /health` and the app factory exist so far. The endpoints below are built one user story at a time, alongside the frontend page that uses them.
 
 ## User stories covered
 
@@ -72,6 +74,16 @@ All routes are defined with `@hono/zod-openapi`, so they appear in `/openapi.jso
 
 No endpoint is paginated. The catalogue is small.
 
+### Validation errors
+
+Every `400` has the same body, produced by a shared zod-openapi `defaultHook`:
+
+```ts
+{ error: "validation_failed"; fields: Record<string, string> }   // field name → message
+```
+
+The frontend uses `fields` to put each error next to the matching form field.
+
 ## Enquiries
 
 Request body:
@@ -90,7 +102,7 @@ Request body:
 Responses:
 
 - `201`: the email was sent. The frontend shows "Thank you".
-- `400`: validation failed. `404`: unknown product.
+- `400`: validation failed, in the shape above. `404`: unknown product.
 - `429`: rate-limited. The limit is **5 enquiries per IP per 10 minutes**, held in memory per instance.
 - `502`: the email failed to send. Enquiries are not stored anywhere, so the customer must see an error and retry. The frontend never shows "Thank you" for an enquiry that wasn't delivered.
 - Honeypot filled: return `201` but send nothing.
