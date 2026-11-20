@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   images: {
-    // Product images come from the catalogue provider, whose address is only in .env.local.
+    // Product images come from the catalogue provider at FAKE_STORE_URL (see .env.example).
     remotePatterns: process.env.FAKE_STORE_URL
       ? [new URL(`${process.env.FAKE_STORE_URL}/img/**`)]
       : [],

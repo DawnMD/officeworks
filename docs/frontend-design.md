@@ -42,7 +42,7 @@ A shared header in the root layout holds:
 - **Product tile**: image, name and price. The whole tile links to `/products/[id]`.
 - **Product page**: image, name, price, description, **Category** (linked) and **Rating**, plus the **Enquire** button.
 - Prices have no currency from the provider. They are displayed as AUD with `Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD" })`.
-- Images use `next/image`, with the provider's `/img/**` path under `FAKE_STORE_URL` allowed in `images.remotePatterns`. The address is set only in `.env.local`, never committed.
+- Images use `next/image`, with the provider's `/img/**` path under `FAKE_STORE_URL` allowed in `images.remotePatterns`. `.env.example` points it at the public Fake Store API.
 
 ## Data fetching and caching
 

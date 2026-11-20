@@ -125,7 +125,7 @@ Enquiry log:
 | --- | --- |
 | `PORT`, `CORS_ORIGINS` | Existing |
 | `ENQUIRIES_CSV_PATH` | CSV file enquiries are appended to; defaults to `data/enquiries.csv` |
-| `FAKE_STORE_URL` | Origin of the catalogue provider. Required; set only in `.env`, never committed |
+| `FAKE_STORE_URL` | Origin of the catalogue provider. Required; `.env.example` points it at the public Fake Store API (`https://fakestoreapi.com`) |
 
 ## Out of scope (for now)
 
