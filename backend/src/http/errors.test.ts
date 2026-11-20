@@ -24,6 +24,7 @@ function appWithProbeRoute(handler: () => Promise<unknown> = async () => ({})) {
   const app = createApp({
     corsOrigins: ["http://localhost:3000"],
     catalogue: createInMemoryCatalogue(),
+    featured: { home: [], categories: {} },
   });
   app.route("/", probe);
   return app;
@@ -66,6 +67,7 @@ describe("shared error responses", () => {
     const app = createApp({
       corsOrigins: ["http://localhost:3000"],
       catalogue: createInMemoryCatalogue(),
+      featured: { home: [], categories: {} },
     });
 
     const spec = (await (await app.request("/openapi.json")).json()) as {

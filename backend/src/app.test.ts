@@ -6,6 +6,7 @@ const testApp = () =>
   createApp({
     corsOrigins: ["http://localhost:3000"],
     catalogue: createInMemoryCatalogue(),
+    featured: { home: [], categories: {} },
   });
 
 describe("api", () => {
@@ -25,6 +26,7 @@ describe("api", () => {
     const app = createApp({
       corsOrigins: ["https://shop.example"],
       catalogue: createInMemoryCatalogue(),
+      featured: { home: [], categories: {} },
     });
     const allowed = await app.request("/health", {
       headers: { Origin: "https://shop.example" },
