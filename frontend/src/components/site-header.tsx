@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { getCategories } from "@/lib/catalogue";
+import { CategoryLinks } from "./category-links";
 import { HeaderSearch } from "./header-search";
 import { SearchForm } from "./search-form";
 
@@ -10,8 +12,9 @@ export function SiteHeader() {
         <Link href="/" className="text-lg font-semibold tracking-tight">
           officeworks
         </Link>
-        {/* Category links (#7) go here. */}
-        <nav aria-label="Categories" className="flex flex-1 flex-wrap gap-4" />
+        <Suspense fallback={<CategoryLinks categories={[]} />}>
+          <HeaderCategories />
+        </Suspense>
         <div className="w-full sm:w-auto">
           <Suspense fallback={<SearchForm />}>
             <HeaderSearch />
@@ -20,4 +23,11 @@ export function SiteHeader() {
       </div>
     </header>
   );
+}
+
+async function HeaderCategories() {
+  // During a catalogue outage the header shows no links rather than breaking every page;
+  // the page itself shows the catalogue error.
+  const categories = await getCategories().catch(() => []);
+  return <CategoryLinks categories={categories} />;
 }

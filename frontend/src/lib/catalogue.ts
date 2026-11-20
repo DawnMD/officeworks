@@ -41,3 +41,32 @@ export async function getHomeFeatured() {
   }
   return data.featured;
 }
+
+/** Every Category, for the header links. Cached for about 5 minutes. */
+export async function getCategories() {
+  "use cache";
+  cacheLife({ revalidate: 300 });
+
+  const { data, response } = await api.GET("/categories");
+  if (!data) {
+    // 502 catalogue_unavailable (or anything unexpected): let the caller decide.
+    throw new Error(`GET /categories returned ${response.status}`);
+  }
+  return data;
+}
+
+/** The Category with its Featured and Additional products, or `null` for an unknown slug. Cached for about 5 minutes. */
+export async function getCategory(slug: string) {
+  "use cache";
+  cacheLife({ revalidate: 300 });
+
+  const { data, response } = await api.GET("/categories/{slug}", {
+    params: { path: { slug } },
+  });
+  if (response.status === 404) return null;
+  if (!data) {
+    // 502 catalogue_unavailable (or anything unexpected): let the error boundary show it.
+    throw new Error(`GET /categories/${slug} returned ${response.status}`);
+  }
+  return data;
+}
