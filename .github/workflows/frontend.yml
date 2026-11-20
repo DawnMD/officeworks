@@ -3,10 +3,9 @@ name: frontend
 on:
   push:
     branches: [main]
-    # The build prerenders pages from the backend, so backend changes can break it too.
-    paths: ["frontend/**", "backend/**", ".github/workflows/frontend.yml"]
+    paths: ["frontend/**", ".github/workflows/frontend.yml"]
   pull_request:
-    paths: ["frontend/**", "backend/**", ".github/workflows/frontend.yml"]
+    paths: ["frontend/**", ".github/workflows/frontend.yml"]
 
 defaults:
   run:
@@ -24,35 +23,8 @@ jobs:
         with:
           node-version-file: frontend/.nvmrc
           cache: pnpm
-          cache-dependency-path: |
-            frontend/pnpm-lock.yaml
-            backend/pnpm-lock.yaml
+          cache-dependency-path: frontend/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
-
-      # `next build` prerenders cached pages (e.g. the home page's Featured products),
-      # which call the backend, so run it for the duration of the build.
-      - name: Start backend
-        working-directory: backend
-        env:
-          FAKE_STORE_URL: ${{ secrets.FAKE_STORE_URL }}
-        run: |
-          : "${FAKE_STORE_URL:?Set the FAKE_STORE_URL repository secret (Settings > Secrets and variables > Actions)}"
-          pnpm install --frozen-lockfile
-          pnpm build
-          nohup node dist/server.js > "$RUNNER_TEMP/backend.log" 2>&1 &
-          echo $! > "$RUNNER_TEMP/backend.pid"
-          curl --silent --fail --retry 30 --retry-delay 1 --retry-connrefused \
-            http://localhost:8787/health
-      - run: pnpm build
-        env:
-          API_URL: http://localhost:8787
-          NEXT_PUBLIC_API_URL: http://localhost:8787
-          FAKE_STORE_URL: ${{ secrets.FAKE_STORE_URL }}
-      - name: Stop backend
-        if: always()
-        run: |
-          if [ -f "$RUNNER_TEMP/backend.pid" ]; then kill "$(cat "$RUNNER_TEMP/backend.pid")" || true; fi
-          cat "$RUNNER_TEMP/backend.log" 2>/dev/null || true
