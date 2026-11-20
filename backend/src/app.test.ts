@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { createApp } from "./app.js";
+import { createInMemoryCatalogue } from "./catalogue/in-memory.js";
 
-const testApp = () => createApp({ corsOrigins: ["http://localhost:3000"] });
+const testApp = () =>
+  createApp({
+    corsOrigins: ["http://localhost:3000"],
+    catalogue: createInMemoryCatalogue(),
+  });
 
 describe("api", () => {
   it("GET /health", async () => {
@@ -17,7 +22,10 @@ describe("api", () => {
   });
 
   it("allows only the CORS origins it was built with", async () => {
-    const app = createApp({ corsOrigins: ["https://shop.example"] });
+    const app = createApp({
+      corsOrigins: ["https://shop.example"],
+      catalogue: createInMemoryCatalogue(),
+    });
     const allowed = await app.request("/health", {
       headers: { Origin: "https://shop.example" },
     });
