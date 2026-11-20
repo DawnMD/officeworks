@@ -1,11 +1,13 @@
 import { serve } from "@hono/node-server";
 import { createApp } from "./app.js";
 import { createFakeStoreCatalogue } from "./catalogue/fake-store.js";
+import { checkFeaturedConfig, featured } from "./catalogue/featured.js";
 import { env } from "./env.js";
 
 const app = createApp({
   corsOrigins: env.corsOrigins,
   catalogue: createFakeStoreCatalogue({ fetch, baseUrl: env.fakeStoreUrl }),
+  featured: checkFeaturedConfig(featured),
 });
 
 const server = serve({ fetch: app.fetch, port: env.port }, (info) => {

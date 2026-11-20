@@ -3,6 +3,7 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import type { CatalogueSource } from "./catalogue/catalogue-source.js";
+import type { FeaturedConfig } from "./catalogue/featured.js";
 import {
   CatalogueUnavailableSchema,
   NotFoundSchema,
@@ -14,6 +15,7 @@ import { health } from "./routes/health.js";
 export type AppDeps = {
   corsOrigins: string[];
   catalogue: CatalogueSource;
+  featured: FeaturedConfig;
 };
 
 export function createApp(deps: AppDeps) {
