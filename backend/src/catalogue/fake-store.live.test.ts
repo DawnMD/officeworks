@@ -20,4 +20,21 @@ describe("Fake Store catalogue (live)", () => {
       });
     }
   });
+
+  it("gets product 1", async () => {
+    const product = await catalogue.getProduct(1);
+
+    expect(product).toEqual({
+      id: 1,
+      name: expect.any(String),
+      description: expect.any(String),
+      price: expect.any(Number),
+      imageUrl: expect.stringMatching(/^https:\/\//),
+      category: {
+        slug: expect.stringMatching(/^[a-z0-9-]+$/),
+        name: expect.any(String),
+      },
+      rating: { rate: expect.any(Number), count: expect.any(Number) },
+    });
+  });
 });

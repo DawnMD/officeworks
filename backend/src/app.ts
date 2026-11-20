@@ -11,6 +11,7 @@ import {
   ValidationFailedSchema,
 } from "./http/errors.js";
 import { health } from "./routes/health.js";
+import { products } from "./routes/products.js";
 
 export type AppDeps = {
   corsOrigins: string[];
@@ -33,6 +34,7 @@ export function createApp(deps: AppDeps) {
   app.openAPIRegistry.register("ValidationFailed", ValidationFailedSchema);
 
   app.route("/", health);
+  app.route("/", products(deps.catalogue));
 
   app.doc31("/openapi.json", {
     openapi: "3.1.0",

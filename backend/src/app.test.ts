@@ -19,7 +19,8 @@ describe("api", () => {
   it("serves the OpenAPI spec without the placeholder /hello route", async () => {
     const res = await testApp().request("/openapi.json");
     const spec = (await res.json()) as { paths: Record<string, unknown> };
-    expect(Object.keys(spec.paths)).toEqual(["/health"]);
+    expect(Object.keys(spec.paths)).toContain("/health");
+    expect(Object.keys(spec.paths)).not.toContain("/hello");
   });
 
   it("allows only the CORS origins it was built with", async () => {
