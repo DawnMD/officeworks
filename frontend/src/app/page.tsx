@@ -1,10 +1,25 @@
+import { Suspense } from "react";
+import {
+  FeaturedProducts,
+  TopRatedSection,
+} from "@/components/product/featured-products";
+import { ProductGridSkeleton } from "@/components/product/product-grid-skeleton";
+import { getHomeFeatured } from "@/lib/catalogue";
+
 export default function HomePage() {
   return (
-    <section className="flex flex-col gap-2">
-      <h1 className="text-2xl font-semibold">Top rated</h1>
-      <p className="text-muted-foreground text-sm">
-        Featured products are coming soon.
-      </p>
-    </section>
+    <Suspense
+      fallback={
+        <TopRatedSection>
+          <ProductGridSkeleton count={5} />
+        </TopRatedSection>
+      }
+    >
+      <Featured />
+    </Suspense>
   );
+}
+
+async function Featured() {
+  return <FeaturedProducts products={await getHomeFeatured()} />;
 }

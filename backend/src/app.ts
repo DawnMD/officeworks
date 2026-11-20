@@ -11,6 +11,7 @@ import {
   ValidationFailedSchema,
 } from "./http/errors.js";
 import { health } from "./routes/health.js";
+import { home } from "./routes/home.js";
 import { products } from "./routes/products.js";
 
 export type AppDeps = {
@@ -35,6 +36,7 @@ export function createApp(deps: AppDeps) {
 
   app.route("/", health);
   app.route("/", products(deps.catalogue));
+  app.route("/", home(deps.catalogue, deps.featured));
 
   app.doc31("/openapi.json", {
     openapi: "3.1.0",
