@@ -98,6 +98,8 @@ Full design notes: [`docs/backend-design.md`](docs/backend-design.md), [`docs/fr
 - [`DECISIONS.md`](DECISIONS.md): assumptions where the acceptance criteria were unclear, requirements dropped or simplified, how the design grows beyond the PoC, and what's next with another day.
 - [`AI_USAGE.md`](AI_USAGE.md): tools and models used, agent instruction files, the plan, key prompts, and where the AI got things wrong.
 
+**About the pull requests:** each user story was built on its own feature branch and PR, and those PRs (#10, #15–#22) are already merged into `main`, not left open as the brief asks. [#23](https://github.com/DawnMD/officeworks/pull/23) is left open as the PR to review. See [`DECISIONS.md`](DECISIONS.md#requirements-dropped-or-simplified-and-why).
+
 ## Time spent
 
 <!-- TODO(author): fill in your actual time. -->
