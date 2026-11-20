@@ -33,4 +33,4 @@ The work moved through four stages. Each stage's output was reviewed before it b
 
 ## Where the AI got it wrong
 
-- **It added a full build to CI.** The AI made CI build both apps, and to get the frontend build through, it started the backend inside the frontend job. That pulled in a repository secret for the catalogue provider and made CI depend on a live third-party API. It was caught in review, because CI here is only meant to check lint, types and tests. The build steps were removed from both workflows, and each app's CI went back to `lint`, `typecheck` and `test`.
+- **It added a full build to CI.** The AI made CI build both apps, and to get the frontend build through, it started the backend inside the frontend job. That pulled in a repository secret for the catalogue provider and made CI depend on a live third-party API. I caught it while reviewing the PR by hand and running its CI. CI here is only meant to check lint, types and tests. The build steps were removed from both workflows, and each app's CI went back to `lint`, `typecheck` and `test`.
