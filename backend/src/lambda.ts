@@ -1,5 +1,6 @@
 import { handle } from "hono/aws-lambda";
-import { app } from "./app.js";
+import { createApp } from "./app.js";
+import { env } from "./env.js";
 
 // Entry point for AWS Lambda (API Gateway / Function URL). Not used by the Node server.
-export const handler = handle(app);
+export const handler = handle(createApp({ corsOrigins: env.corsOrigins }));
