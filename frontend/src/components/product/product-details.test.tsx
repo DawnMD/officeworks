@@ -1,5 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { renderWithProviders } from "@/test/render";
 import { ProductDetails } from "./product-details";
 
 const backpack = {
@@ -14,7 +15,7 @@ const backpack = {
 
 describe("ProductDetails", () => {
   it("shows the product's name, price in Australian dollars and description", () => {
-    render(<ProductDetails product={backpack} />);
+    renderWithProviders(<ProductDetails product={backpack} />);
 
     expect(
       screen.getByRole("heading", {
@@ -29,7 +30,7 @@ describe("ProductDetails", () => {
   });
 
   it("shows the product's image, described by its name", () => {
-    render(<ProductDetails product={backpack} />);
+    renderWithProviders(<ProductDetails product={backpack} />);
 
     expect(
       screen.getByRole("img", { name: "Fjallraven Foldsack No. 1 Backpack" }),
@@ -37,7 +38,7 @@ describe("ProductDetails", () => {
   });
 
   it("links the category name to its category page", () => {
-    render(<ProductDetails product={backpack} />);
+    renderWithProviders(<ProductDetails product={backpack} />);
 
     expect(
       screen.getByRole("link", { name: "men's clothing" }),
@@ -45,10 +46,22 @@ describe("ProductDetails", () => {
   });
 
   it("shows the product's rating and how many customers rated it", () => {
-    render(<ProductDetails product={backpack} />);
+    renderWithProviders(<ProductDetails product={backpack} />);
 
     expect(
       screen.getByText("Rated 3.9 out of 5 (120 ratings)"),
+    ).toBeInTheDocument();
+  });
+
+  it("opens the enquiry dialog for this product from the Enquire button", async () => {
+    const { user } = renderWithProviders(<ProductDetails product={backpack} />);
+
+    await user.click(screen.getByRole("button", { name: "Enquire" }));
+
+    expect(
+      screen.getByRole("dialog", {
+        name: "Enquire about Fjallraven Foldsack No. 1 Backpack",
+      }),
     ).toBeInTheDocument();
   });
 });

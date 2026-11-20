@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { EnquiryDialog } from "@/components/enquiry/enquiry-dialog";
 import type { components } from "@/lib/api/schema";
 import { formatPrice } from "@/lib/format-price";
 
@@ -33,6 +34,9 @@ export function ProductDetails({ product }: { product: Product }) {
         <p className="text-muted-foreground text-sm leading-relaxed">
           {product.description}
         </p>
+        <div>
+          <EnquiryDialog product={product} />
+        </div>
       </div>
     </article>
   );

@@ -301,6 +301,72 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/enquiries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["Enquiry"];
+                };
+            };
+            responses: {
+                /** @description The enquiry was saved for the sales team */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EnquirySaved"];
+                    };
+                };
+                /** @description One or more fields are invalid */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ValidationFailed"];
+                    };
+                };
+                /** @description No product has this id */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["NotFound"];
+                    };
+                };
+                /** @description The enquiry was not saved: the catalogue provider is unavailable or the enquiry could not be recorded */
+                502: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CatalogueUnavailable"] | components["schemas"]["EnquiryNotSaved"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -347,6 +413,23 @@ export interface components {
             category: components["schemas"]["Category"];
             featured: components["schemas"]["Product"][];
             additional: components["schemas"]["Product"][];
+        };
+        EnquirySaved: {
+            /** @enum {string} */
+            status: "saved";
+        };
+        EnquiryNotSaved: {
+            /** @enum {string} */
+            error: "enquiry_not_saved";
+        };
+        Enquiry: {
+            productId: number;
+            name: string;
+            /** Format: email */
+            email: string;
+            phone?: string;
+            message?: string;
+            website?: string;
         };
     };
     responses: never;
