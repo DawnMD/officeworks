@@ -1,0 +1,18 @@
+import { cacheLife } from "next/cache";
+import { api } from "@/lib/api/client";
+
+/** The product, or `null` if the catalogue has none with this id. Cached for about 5 minutes. */
+export async function getProduct(id: number) {
+  "use cache";
+  cacheLife({ revalidate: 300 });
+
+  const { data, response } = await api.GET("/products/{id}", {
+    params: { path: { id } },
+  });
+  if (response.status === 404) return null;
+  if (!data) {
+    // 502 catalogue_unavailable (or anything unexpected): let the error boundary show it.
+    throw new Error(`GET /products/${id} returned ${response.status}`);
+  }
+  return data;
+}
