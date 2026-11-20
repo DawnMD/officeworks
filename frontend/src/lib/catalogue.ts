@@ -28,3 +28,16 @@ export async function searchProducts(term: string) {
   }
   return data;
 }
+
+/** The home page's Featured products, in configured order. Cached for about 5 minutes. */
+export async function getHomeFeatured() {
+  "use cache";
+  cacheLife({ revalidate: 300 });
+
+  const { data, response } = await api.GET("/home");
+  if (!data) {
+    // 502 catalogue_unavailable (or anything unexpected): let the error boundary show it.
+    throw new Error(`GET /home returned ${response.status}`);
+  }
+  return data.featured;
+}

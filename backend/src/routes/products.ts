@@ -11,7 +11,7 @@ const CategorySchema = z
   .object({ slug: z.string(), name: z.string() })
   .openapi("Category");
 
-const ProductSchema = z
+export const ProductSchema = z
   .object({
     id: z.number().int(),
     name: z.string(),
