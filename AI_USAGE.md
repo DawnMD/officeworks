@@ -24,11 +24,12 @@ Each user story was then built as a vertical slice on its own branch and PR (`fe
 
 ## Key prompts and moments
 
-_TODO: 3–5 prompts or moments that shaped the solution._
+The work moved through four stages. Each stage's output was reviewed before it became the next stage's input.
 
-1. _TODO_
-2. _TODO_
-3. _TODO_
+1. **Questioning the idea before any design.** The AI was asked to probe the brief and challenge the assumptions behind it, not to start building. This brought out the gaps in the acceptance criteria early, such as what "top rated" means and what "the sales inbox" should be for a PoC. The answers became the assumptions in [`DECISIONS.md`](DECISIONS.md) and the terms in [`GLOSSARY.md`](GLOSSARY.md).
+2. **Turning the decisions into specs.** The agreed answers were written up as the backend and frontend design docs, so later work had one source to check against.
+3. **Breaking the specs into tickets.** The specs were split into small issues, one vertical slice per user story, each with its own branch and PR.
+4. **Building each ticket test-first.** For each ticket the tests came first, from the spec's expected behaviour, and the code followed. This is why the backend routes and the enquiry form states have tests that line up with the design docs.
 
 ## Where the AI got it wrong
 
