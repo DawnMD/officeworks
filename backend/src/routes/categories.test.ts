@@ -7,6 +7,7 @@ import {
   type Product,
 } from "../catalogue/catalogue-source.js";
 import { createInMemoryCatalogue } from "../catalogue/in-memory.js";
+import { createInMemoryEnquiryStore } from "../enquiries/in-memory.js";
 
 const electronics: Category = { slug: "electronics", name: "electronics" };
 const mensClothing: Category = {
@@ -32,6 +33,7 @@ const appWith = (
     corsOrigins: ["http://localhost:3000"],
     catalogue,
     featured: { home: [], categories },
+    enquiries: createInMemoryEnquiryStore(),
   });
 
 const down = (): CatalogueSource => {

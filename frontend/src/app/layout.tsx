@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
+import { Providers } from "@/components/providers";
 import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 
@@ -17,10 +18,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${jetbrainsMono.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
-        <SiteHeader />
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
-          {children}
-        </main>
+        <Providers>
+          <SiteHeader />
+          <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   );

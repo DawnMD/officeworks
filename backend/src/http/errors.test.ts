@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { createApp } from "../app.js";
 import { CatalogueUnavailableError } from "../catalogue/catalogue-source.js";
 import { createInMemoryCatalogue } from "../catalogue/in-memory.js";
+import { createInMemoryEnquiryStore } from "../enquiries/in-memory.js";
 import { createRouter } from "./router.js";
 
 /** The app with one throwaway route, built the way every real route is. */
@@ -25,6 +26,7 @@ function appWithProbeRoute(handler: () => Promise<unknown> = async () => ({})) {
     corsOrigins: ["http://localhost:3000"],
     catalogue: createInMemoryCatalogue(),
     featured: { home: [], categories: {} },
+    enquiries: createInMemoryEnquiryStore(),
   });
   app.route("/", probe);
   return app;
@@ -68,6 +70,7 @@ describe("shared error responses", () => {
       corsOrigins: ["http://localhost:3000"],
       catalogue: createInMemoryCatalogue(),
       featured: { home: [], categories: {} },
+      enquiries: createInMemoryEnquiryStore(),
     });
 
     const spec = (await (await app.request("/openapi.json")).json()) as {

@@ -10,4 +10,7 @@ const baseUrl =
 
 export const api = createClient<paths>({
   baseUrl: baseUrl ?? "http://localhost:8787",
+  // Look fetch up on each call rather than once at import, so anything that wraps it later
+  // (instrumentation, MSW in tests) sees every request.
+  fetch: (request) => globalThis.fetch(request),
 });

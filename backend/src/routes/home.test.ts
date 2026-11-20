@@ -6,6 +6,7 @@ import {
   type Product,
 } from "../catalogue/catalogue-source.js";
 import { createInMemoryCatalogue } from "../catalogue/in-memory.js";
+import { createInMemoryEnquiryStore } from "../enquiries/in-memory.js";
 
 const product = (id: number): Product => ({
   id,
@@ -22,6 +23,7 @@ const appWith = (catalogue: CatalogueSource, home: number[]) =>
     corsOrigins: ["http://localhost:3000"],
     catalogue,
     featured: { home, categories: {} },
+    enquiries: createInMemoryEnquiryStore(),
   });
 
 describe("GET /home", () => {
