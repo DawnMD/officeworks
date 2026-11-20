@@ -1,6 +1,6 @@
 # Decisions and assumptions
 
-The decisions behind this proof of concept: what was assumed where the acceptance criteria left gaps, what was cut, and how the design grows. Setup and the design overview are in the [README](README.md).
+The decisions behind this proof of concept: what was assumed where the acceptance criteria left gaps, why the frontend is built the way it is, what was cut, and how the design grows. Setup and the design overview are in the [README](README.md).
 
 ## Assumptions where the criteria were unclear
 
@@ -11,6 +11,22 @@ The decisions behind this proof of concept: what was assumed where the acceptanc
 - **Categories** are the provider's four flat categories, addressed by a URL slug (`mens-clothing`). A product belongs to exactly one category.
 - **Prices** have no currency from the provider. They are shown as AUD.
 - **Enquiry form fields**: name and email are required. Phone and message are optional.
+
+## Frontend choices
+
+- **Search is a plain HTML form, not React Hook Form.** The search bar has a single input that submits a GET request to `/search?q=…`. A form library earns its place when there's client-side state to manage: several fields, cross-field validation, server errors mapped onto fields. Search has none of that.
+  - The browser already does what's needed. `required` stops an empty search ever reaching the backend, and the form submits with no JavaScript loaded.
+  - The term lives in the URL, so results can be bookmarked, shared and reached with the back button, and the results page is rendered on the server.
+  - It ships no extra JavaScript for the header, which is on every page.
+
+  The enquiry form is different. It has several fields, validation that must match the backend's, server errors mapped onto each field, and pending, success and failure states. That's why it uses React Hook Form with zod.
+- **Catalogue data is fetched in the page on the server, not in the browser like a single-page app.** The home, category, product and search pages are Server Components that call the backend while rendering.
+  - The customer gets products in the first HTML response, not an empty shell that fills in later. That's faster on first load and can be indexed by search engines, which matters for a catalogue.
+  - Pages that are cached or prerendered are served without a call to the backend. Catalogue reads are cached on the server for about 5 minutes with Next's `"use cache"`. A client cache such as TanStack Query would add a second cache on top of that, which is why it isn't used for reads.
+  - Server-side rendering reaches the backend through `API_URL`, which can be a private address. The browser never needs to talk to the backend just to show products, so the backend stays the only place that calls the catalogue provider.
+  - Loading and errors are handled per page: `<Suspense>` skeletons while data loads, `notFound()` for unknown products and categories, and an error boundary with a retry button when the catalogue is down.
+
+  The one browser-side call is submitting an enquiry. It goes straight from the browser to the backend, so the backend's rate limit applies per customer IP, not to the Next server's single IP.
 
 ## Requirements dropped or simplified, and why
 
