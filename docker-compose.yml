@@ -1,0 +1,51 @@
+# Runs the whole app locally: `docker compose up --build`, then open http://localhost:3000.
+# Every setting has a working default; nothing needs to be copied or configured first.
+#
+# Order: the backend is built and started first. The frontend runs `next build` only once the
+# backend is healthy, because the build prerenders pages from the backend's data.
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8787:8787"
+    environment:
+      PORT: 8787
+      CORS_ORIGINS: http://localhost:3000
+      FAKE_STORE_URL: https://fakestoreapi.com
+      ENQUIRIES_CSV_PATH: data/enquiries.csv
+    volumes:
+      # Keeps the enquiry log across restarts. Read it with:
+      #   docker compose exec backend cat data/enquiries.csv
+      - enquiries:/app/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8787/health').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  frontend:
+    build:
+      context: ./frontend
+      target: local
+    ports:
+      - "3000:3000"
+    environment:
+      # Server-side code (and `next build`) reaches the backend over the compose network.
+      API_URL: http://backend:8787
+      # Inlined into the browser bundle, so it must be an address your browser can reach.
+      NEXT_PUBLIC_API_URL: http://localhost:8787
+      # Allowed host for product images (next/image).
+      FAKE_STORE_URL: https://fakestoreapi.com
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      # Allows time for `next build` to finish before the app counts as up.
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      start_period: 180s
+      retries: 3
+
+volumes:
+  enquiries:

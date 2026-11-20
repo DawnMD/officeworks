@@ -4,6 +4,7 @@ The decisions behind this proof of concept: what was assumed where the acceptanc
 
 ## Assumptions where the criteria were unclear
 
+- **The frontend build needs a running backend.** `next build` prerenders the catalogue pages from the backend's data, so they're fast from the first request. That's why `docker compose` starts the backend first and builds the frontend once the backend is healthy. The cost: the frontend image can't be built in isolation, and CI checks lint, types and tests rather than running a build.
 - **"Top rated" means picked by the merchant**, not the provider's customer rating. The criterion says "I have chosen 5 products", so the picks are a typed config (`featured.ts`) and changing them is a code change. The rating is shown on the product only for information.
 - **"Sales inbox" is an enquiry log for the PoC.** Each enquiry is appended to a CSV file instead of being emailed. Real email would need an account with an email provider, and the brief says the reviewer must not need one. It also says the email provider will change. `EnquiryStore` is the place to plug email in.
 - **Search** is a case-insensitive substring match on product name and description. It runs when the customer submits the form, not as they type. An empty search is blocked.
@@ -17,7 +18,6 @@ The decisions behind this proof of concept: what was assumed where the acceptanc
 - **No admin UI or auth** for choosing featured products. Changing them is a code change, which is enough for a PoC with one merchant.
 - **No database, caching layer in the backend, or pagination.** The catalogue has 20 products. The frontend caches catalogue reads for about 5 minutes.
 - **No end-to-end tests.** The critical path is covered by backend route tests and frontend component tests that run against in-memory fakes. Live tests against Fake Store were removed so the tests don't depend on a third-party API.
-- **No `docker compose`.** Each app has its own Dockerfile, but local setup is two terminals and two commands.
 - **Feature PRs were merged, not left open.** The brief asks for one PR into `main`, left open. Each user story was instead built on its own feature branch and PR, then merged into `main` so the next story could build on it. The review history is in the merged PRs: [#10](https://github.com/DawnMD/officeworks/pull/10) (app factory), [#15](https://github.com/DawnMD/officeworks/pull/15) (storefront shell), [#16](https://github.com/DawnMD/officeworks/pull/16) (catalogue source), [#17](https://github.com/DawnMD/officeworks/pull/17) (featured config), [#18](https://github.com/DawnMD/officeworks/pull/18) (product page), [#19](https://github.com/DawnMD/officeworks/pull/19) (search), [#20](https://github.com/DawnMD/officeworks/pull/20) (home page), [#21](https://github.com/DawnMD/officeworks/pull/21) (categories) and [#22](https://github.com/DawnMD/officeworks/pull/22) (enquiries). [#23](https://github.com/DawnMD/officeworks/pull/23) (env fix and submission docs) is left open as the PR to review.
 
 ## How it grows beyond the PoC
@@ -30,5 +30,5 @@ The decisions behind this proof of concept: what was assumed where the acceptanc
 ## Next, with another day
 
 - Send enquiries by email through a local SMTP catcher (e.g. Mailpit) in development and SES in production.
-- Add `docker-compose.yml` for one-command startup, and a Playwright end-to-end test of the five journeys.
+- Add a Playwright end-to-end test of the five journeys.
 - Cache catalogue responses in the backend, and serve product images through the backend or a CDN.

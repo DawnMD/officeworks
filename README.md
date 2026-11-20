@@ -16,7 +16,32 @@ One git repo holds two independent apps. There is no shared root `package.json` 
 
 ## Run it locally
 
-Requires **Node 24** and **pnpm** (`corepack enable` gives you pnpm). Allow about 5 minutes. No accounts or paid services are needed: the catalogue comes from the public [Fake Store API](https://fakestoreapi.com).
+No accounts or paid services are needed: the catalogue comes from the public [Fake Store API](https://fakestoreapi.com).
+
+### With Docker (one command)
+
+Requires Docker with Compose.
+
+```sh
+docker compose up --build
+```
+
+Then open:
+
+- http://localhost:3000: the storefront
+- http://localhost:8787/docs: Swagger UI for the API (the spec is at `/openapi.json`)
+
+The backend is built and started first. The frontend runs `next build` only once the backend is healthy, because the build prerenders pages from the backend's data. So the storefront takes a minute or two to come up after the backend does. `docker compose up --build --wait` returns once both are ready.
+
+Enquiries are kept in a Docker volume. To read the enquiry log:
+
+```sh
+docker compose exec backend cat data/enquiries.csv
+```
+
+### Without Docker
+
+Requires **Node 24** and **pnpm** (`corepack enable` gives you pnpm). Start the backend first, for the same reason as above.
 
 ```sh
 # terminal 1: backend on http://localhost:8787
@@ -26,12 +51,7 @@ cd backend && cp .env.example .env && pnpm install && pnpm dev
 cd frontend && cp .env.example .env.local && pnpm install && pnpm dev
 ```
 
-Then open:
-
-- http://localhost:3000: the storefront
-- http://localhost:8787/docs: Swagger UI for the API (the spec is at `/openapi.json`)
-
-The example env files work as they are. You don't need to change anything.
+The example env files work as they are. You don't need to change anything. Enquiries go to `backend/data/enquiries.csv`.
 
 ## Test
 
@@ -64,7 +84,7 @@ Every setting has a working default in the example env files. No secrets are com
 
 **Featured ("Top rated") products** are picked in [`backend/src/catalogue/featured.ts`](backend/src/catalogue/featured.ts): up to 5 for the home page and up to 3 per category. The limits are checked at startup.
 
-**Enquiries** are appended to `backend/data/enquiries.csv`. Open it to see what the sales team would receive.
+**Enquiries** are appended to the enquiry log, a CSV file. It's what the sales team would receive. See [Run it locally](#run-it-locally) for where to find it.
 
 ## How the acceptance criteria are met
 
@@ -115,4 +135,4 @@ About 6.5 hours in total, well over the 2–3 hour time-box. Most of the extra t
 ## Deployment
 
 - **backend**: `backend/Dockerfile` builds a Node container (ECS/Fargate, Fly, Railway, a VPS, …). `src/lambda.ts` exports a handler for AWS Lambda. The image keeps the enquiry log on a `/app/data` volume. Lambda's filesystem is temporary, so use the container if enquiries matter.
-- **frontend**: `frontend/Dockerfile` builds a Next.js standalone image. Pass `NEXT_PUBLIC_API_URL` as a build arg and `API_URL` at runtime. On Vercel, set the project's Root Directory to `frontend`.
+- **frontend**: `frontend/Dockerfile` builds a Next.js standalone image. Pass `NEXT_PUBLIC_API_URL` and `FAKE_STORE_URL` as build args and `API_URL` at runtime. The backend must be reachable while the image builds, because `next build` prerenders pages from it. On Vercel, set the project's Root Directory to `frontend`.
