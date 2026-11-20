@@ -56,9 +56,49 @@ const getProduct = createRoute({
   },
 });
 
+const searchProducts = createRoute({
+  method: "get",
+  path: "/products",
+  tags: ["catalogue"],
+  request: {
+    query: z.object({
+      q: z
+        .string("Enter a search term")
+        .trim()
+        .min(1, "Enter a search term")
+        .openapi({ param: { name: "q", in: "query" }, example: "backpack" }),
+    }),
+  },
+  responses: {
+    200: {
+      description: "Products whose name or description contains the term",
+      content: { "application/json": { schema: z.array(ProductSchema) } },
+    },
+    400: {
+      description: "The search term is missing or blank",
+      content: { "application/json": { schema: ValidationFailedSchema } },
+    },
+    502: {
+      description: "The catalogue provider is unavailable",
+      content: { "application/json": { schema: CatalogueUnavailableSchema } },
+    },
+  },
+});
+
 export function products(catalogue: CatalogueSource) {
-  return createRouter().openapi(getProduct, async (c) => {
-    const { id } = c.req.valid("param");
-    return c.json(await catalogue.getProduct(id), 200);
-  });
+  return createRouter()
+    .openapi(searchProducts, async (c) => {
+      const { q } = c.req.valid("query");
+      const term = q.toLowerCase();
+      const matches = (text: string) => text.toLowerCase().includes(term);
+      const all = await catalogue.listProducts();
+      return c.json(
+        all.filter((p) => matches(p.name) || matches(p.description)),
+        200,
+      );
+    })
+    .openapi(getProduct, async (c) => {
+      const { id } = c.req.valid("param");
+      return c.json(await catalogue.getProduct(id), 200);
+    });
 }
