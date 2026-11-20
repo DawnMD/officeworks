@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
   output: "standalone",
   cacheComponents: true,
   partialPrefetching: true,
+  images: {
+    // Product images come from the catalogue provider.
+    remotePatterns: [new URL("https://fakestoreapi.com/img/**")],
+  },
   turbopack: {
     rules: {
       "*.css": {
