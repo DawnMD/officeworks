@@ -4,7 +4,8 @@
 
 ## Tools and models
 
-_TODO: the AI coding tools and models you used, and what you used each one for._
+- **Tool:** [Claude Code](https://claude.com/claude-code), Anthropic's agentic coding tool.
+- **Model:** Claude Opus 5.5, at medium effort.
 
 ## Agent instruction files
 
