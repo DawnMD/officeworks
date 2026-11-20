@@ -39,6 +39,7 @@ jobs:
         env:
           FAKE_STORE_URL: ${{ secrets.FAKE_STORE_URL }}
         run: |
+          : "${FAKE_STORE_URL:?Set the FAKE_STORE_URL repository secret (Settings > Secrets and variables > Actions)}"
           pnpm install --frozen-lockfile
           pnpm build
           nohup node dist/server.js > "$RUNNER_TEMP/backend.log" 2>&1 &
