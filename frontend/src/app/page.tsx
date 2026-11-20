@@ -1,4 +1,3 @@
-import { connection } from "next/server";
 import { Suspense } from "react";
 import {
   FeaturedProducts,
@@ -22,7 +21,5 @@ export default function HomePage() {
 }
 
 async function Featured() {
-  // Render at request time: the backend is not reachable during `next build` (e.g. in CI).
-  await connection();
   return <FeaturedProducts products={await getHomeFeatured()} />;
 }
