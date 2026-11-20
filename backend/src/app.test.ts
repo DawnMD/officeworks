@@ -1,28 +1,37 @@
 import { describe, expect, it } from "vitest";
-import { app } from "./app.js";
+import { createApp } from "./app.js";
+
+const testApp = () => createApp({ corsOrigins: ["http://localhost:3000"] });
 
 describe("api", () => {
   it("GET /health", async () => {
-    const res = await app.request("/health");
+    const res = await testApp().request("/health");
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ status: "ok" });
   });
 
-  it("GET /hello greets by name", async () => {
-    const res = await app.request("/hello?name=Ada");
-    expect(res.status).toBe(200);
-    const body = (await res.json()) as { message: string };
-    expect(body.message).toBe("Hello, Ada!");
-  });
-
-  it("GET /hello rejects an empty name", async () => {
-    const res = await app.request("/hello?name=");
-    expect(res.status).toBe(400);
-  });
-
-  it("serves the OpenAPI spec", async () => {
-    const res = await app.request("/openapi.json");
+  it("serves the OpenAPI spec without the placeholder /hello route", async () => {
+    const res = await testApp().request("/openapi.json");
     const spec = (await res.json()) as { paths: Record<string, unknown> };
-    expect(Object.keys(spec.paths)).toEqual(["/health", "/hello"]);
+    expect(Object.keys(spec.paths)).toEqual(["/health"]);
+  });
+
+  it("allows only the CORS origins it was built with", async () => {
+    const app = createApp({ corsOrigins: ["https://shop.example"] });
+    const allowed = await app.request("/health", {
+      headers: { Origin: "https://shop.example" },
+    });
+    const denied = await app.request("/health", {
+      headers: { Origin: "http://localhost:3000" },
+    });
+    expect(allowed.headers.get("access-control-allow-origin")).toBe(
+      "https://shop.example",
+    );
+    expect(denied.headers.get("access-control-allow-origin")).toBeNull();
+  });
+
+  it("no longer serves GET /hello", async () => {
+    const res = await testApp().request("/hello?name=Ada");
+    expect(res.status).toBe(404);
   });
 });

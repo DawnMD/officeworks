@@ -1,11 +1,8 @@
 import { Suspense } from "react";
 import { api } from "@/lib/api/client";
 
-async function Greeting() {
-  const { data, error } = await api.GET("/hello", {
-    params: { query: { name: "officeworks" } },
-    cache: "no-store",
-  });
+async function ApiStatus() {
+  const { data, error } = await api.GET("/health", { cache: "no-store" });
 
   if (error || !data) {
     return (
@@ -15,12 +12,7 @@ async function Greeting() {
     );
   }
 
-  return (
-    <div className="space-y-1">
-      <p className="text-2xl font-semibold">{data.message}</p>
-      <p className="text-sm text-zinc-500">Server time: {data.timestamp}</p>
-    </div>
-  );
+  return <p className="text-2xl font-semibold">API status: {data.status}</p>;
 }
 
 export default function Home() {
@@ -30,7 +22,7 @@ export default function Home() {
         officeworks
       </h1>
       <Suspense fallback={<p className="text-zinc-500">Calling the API…</p>}>
-        <Greeting />
+        <ApiStatus />
       </Suspense>
     </main>
   );
