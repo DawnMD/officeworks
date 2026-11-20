@@ -16,7 +16,7 @@ Design for the officeworks storefront backend (`backend/`), agreed before implem
 
 ## Data source
 
-- The **Catalogue** comes from [Fake Store API](https://fakestoreapi.com/). There is **no database**.
+- The **Catalogue** comes from Fake Store API, at the address in `FAKE_STORE_URL`. There is **no database**.
 - The API holds 20 products in 4 categories (`electronics`, `jewelery`, `men's clothing`, `women's clothing`). A product has `id`, `title`, `price` (decimal), `description`, `category` (string), `image`, `rating { rate, count }`. There is no search, pagination (beyond `?limit=`), SKU or slug.
 - **No caching** for now: every request calls the provider.
 - Every provider call has a **5 s timeout**. A timeout or non-2xx response returns `502 { error: "catalogue_unavailable" }`.
@@ -126,6 +126,7 @@ Email:
 | `SALES_INBOX` | Recipient of enquiry emails |
 | `MAIL_FROM` | Sender address |
 | `SMTP_URL` | SMTP connection string; unset means log emails to the console |
+| `FAKE_STORE_URL` | Origin of the catalogue provider. Required; set only in `.env`, never committed |
 
 ## Out of scope (for now)
 

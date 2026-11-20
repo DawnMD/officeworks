@@ -37,7 +37,7 @@ const backpack = {
   price: 109.95,
   description: "Fits 15 inch laptops",
   category: "men's clothing",
-  image: "https://fakestoreapi.com/img/1.jpg",
+  image: "https://provider.test/img/1.jpg",
   rating: { rate: 3.9, count: 120 },
 };
 
@@ -47,7 +47,7 @@ const ring = {
   price: 695,
   description: "Silver dragon",
   category: "jewelery",
-  image: "https://fakestoreapi.com/img/5.jpg",
+  image: "https://provider.test/img/5.jpg",
   rating: { rate: 4.6, count: 400 },
 };
 
@@ -63,7 +63,7 @@ describe("Fake Store catalogue", () => {
       name: "Fjallraven Backpack",
       description: "Fits 15 inch laptops",
       price: 109.95,
-      imageUrl: "https://fakestoreapi.com/img/1.jpg",
+      imageUrl: "https://provider.test/img/1.jpg",
       category: { slug: "mens-clothing", name: "men's clothing" },
       rating: { rate: 3.9, count: 120 },
     });

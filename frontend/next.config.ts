@@ -6,8 +6,10 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   images: {
-    // Product images come from the catalogue provider.
-    remotePatterns: [new URL("https://fakestoreapi.com/img/**")],
+    // Product images come from the catalogue provider, whose address is only in .env.local.
+    remotePatterns: process.env.FAKE_STORE_URL
+      ? [new URL(`${process.env.FAKE_STORE_URL}/img/**`)]
+      : [],
   },
   turbopack: {
     rules: {

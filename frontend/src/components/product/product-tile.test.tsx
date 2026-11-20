@@ -6,7 +6,7 @@ const backpack = {
   id: 1,
   name: "Fjallraven Foldsack No. 1 Backpack",
   price: 109.95,
-  imageUrl: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
+  imageUrl: "https://provider.test/img/81fPKd-2AYL._AC_SL1500_.jpg",
 };
 
 describe("ProductTile", () => {

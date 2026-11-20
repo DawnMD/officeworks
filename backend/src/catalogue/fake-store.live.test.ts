@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { env } from "../env.js";
 import { createFakeStoreCatalogue } from "./fake-store.js";
 
-// Calls the real Fake Store API. Run with `pnpm test:live`; not part of `pnpm test`.
+// Calls the real Fake Store API at FAKE_STORE_URL. Run locally with `pnpm test:live`; not part of `pnpm test` or CI.
 describe("Fake Store catalogue (live)", () => {
   const catalogue = createFakeStoreCatalogue({
     fetch,
