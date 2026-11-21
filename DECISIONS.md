@@ -37,7 +37,7 @@ The one call the browser makes is the enquiry submit. It goes straight to the ba
 
 ### The frontend build needs a running backend
 
-`next build` prerenders the catalogue pages from real backend data, so they're fast from the first request. The cost is that the frontend can't build on its own. That's why `docker compose` starts the backend, waits for it to report healthy, and only then builds the frontend. It's also why CI doesn't run a build.
+`next build` prerenders the catalogue pages from real backend data, so they're fast from the first request. The cost is that the frontend can't build on its own. Locally that means starting the backend before the frontend. The Docker Compose setup does the same thing: it starts the backend, waits for its health check, and only then builds the frontend. AI wrote that setup and I haven't checked it myself, so the README recommends the two-terminal setup. This is also why CI doesn't run a build.
 
 ## Requirements dropped or simplified, and why
 

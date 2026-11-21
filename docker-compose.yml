@@ -1,3 +1,4 @@
+# AI-generated and not checked by the author. If it gives you trouble, use the two-terminal setup in README.md.
 # Runs the whole app locally: `docker compose up --build`, then open http://localhost:3000.
 # Every setting has a working default; nothing needs to be copied or configured first.
 #

@@ -34,3 +34,7 @@ I worked in four stages and reviewed the output of each one before feeding it in
 The AI turned CI into a build pipeline. It made CI build both apps. The frontend build failed without a running backend, so it started the backend inside the frontend job. That needed a repository secret for the catalogue provider and made every PR depend on a third-party API being up.
 
 I caught it while reviewing the PR by hand and running its CI. CI in this repo is there to check lint, types and tests, nothing more. I had the build steps removed from both workflows, and each app's CI went back to `lint`, `typecheck` and `test`.
+
+## What I haven't checked
+
+AI wrote the Docker Compose setup, `docker-compose.yml` and the `local` stage in `frontend/Dockerfile`, near the end, to get setup down to one command. It ran once in the AI's own sandbox, against a stand-in catalogue because that sandbox couldn't reach Fake Store. I haven't checked it myself, so I don't vouch for it. The two-terminal setup in the README is the one I tested, and it's the one I recommend.
